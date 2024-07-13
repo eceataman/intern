@@ -1,35 +1,177 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yatırımcı Asistanı</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intertech I-Bot Yatırım Asistanı - Sohbet</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #040047 0%, #201388 100%);
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .header img {
+      height: 40px;
+      margin-right: 20px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 50px;
+    }
+
+    .messages {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      max-width: 60%;
+      position: relative;
+    }
+
+    .message::before {
+      content: "";
+      position: absolute;
+      top: 15px;
+      width: 0;
+      height: 0;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: #2a2a2a;
+    }
+
+    .message.bot::before {
+      border: 10px solid transparent;
+      border-right-color: #2a2a2a;
+      left: -20px;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #4c4cff;
+    }
+
+    .message.user::before {
+      border: 10px solid transparent;
+      border-left-color: #4c4cff;
+      right: -20px;
+    }
+
+    .input-area {
+      display: flex;
+      align-items: center;
+      background: #2a2a2a;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .input-area input {
+      flex: 1;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      margin-right: 10px;
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .input-area button {
+      background: linear-gradient(90deg, #6e39f6, #d96dff);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Yatırımcı Asistanı</h1>
-    <form id="chat-form">
-        <label for="message">Mesajınız:</label>
-        <input type="text" id="message" name="message" required>
+  <div class="header">
+    <img src="intertech-logo-white-text (1).png" alt="Intertech Logo" />
+    <h1>I-Bot Yatırım Asistanı</h1>
+  </div>
+  <div class="content">
+    <div class="messages" id="messageContainer">
+    </div>
+    <form id="chatForm" method="POST">
+      <div class="input-area">
+        <input type="text" placeholder="Yatırım Asistanına Sorun" id="userInput" required />
         <button type="submit">Gönder</button>
+      </div>
     </form>
-    <div id="response"></div>
+  </div>
+  <script>
+    document.getElementById('chatForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const userInput = document.getElementById('userInput').value;
+      if (userInput.trim() !== "") {
+        addMessage(userInput, 'user');
+        document.getElementById('userInput').value = "";
 
-    <script>
-        document.getElementById("chat-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const message = document.getElementById("message").value;
+        fetch('/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({ 'message': userInput })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.response) {
+              addMessage(data.response, 'bot');
+            } else {
+              console.error('Error:', data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+    });
 
-            const response = await fetch("/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: new URLSearchParams({ message }),
-            });
-
-            const data = await response.json();
-            document.getElementById("response").innerText = data.response || data.error;
-        });
-    </script>
+    function addMessage(content, type) {
+      const messageContainer = document.getElementById('messageContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = message ${type};
+      messageDiv.innerText = content;
+      messageContainer.appendChild(messageDiv);
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+  </script>
 </body>
+
 </html>
