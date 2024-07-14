@@ -152,7 +152,9 @@
           .then(response => response.json())
           .then(data => {
             if (data.response) {
-              addMessage(data.response, 'bot');
+            // Gelen yanıttaki [doc1], [doc2] ifadelerini temizle
+            const cleanedResponse = data.response.replace(/\[doc\d+\]/g, '');
+            addMessage(cleanedResponse, 'bot');
             } else {
               console.error('Error:', data.error);
             }
