@@ -12,9 +12,11 @@
       font-family: Arial, sans-serif;
       background: linear-gradient(180deg, #040047 0%, #201388 100%);
       color: white;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      background-repeat: no-repeat;
+      background-size: cover;
     }
 
     .header {
@@ -154,6 +156,7 @@
             if (data.response) {
               addMessage(data.response, 'bot');
             } else {
+              // throws 429 rate limit error
               console.error('Error:', data.error);
             }
           })

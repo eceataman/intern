@@ -2,6 +2,7 @@ import os
 import openai
 import logging
 import dotenv
+import time 
 from flask import Flask, render_template, request, jsonify
 
 # .env dosyasını yükle
@@ -26,15 +27,16 @@ client = openai.AzureOpenAI(
     api_version="2023-08-01-preview"
 )
 
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/chat", methods=["POST"])
-def chat():
+#attempt to solve rate limit 
+def request_with_retry ():
     user_message = request.form["message"]
-    try:
-        response = client.chat.completions.create(
+    attempt = 0
+    max_retries = 3
+    min_interval = 1
+    max_interval = 2
+    while attempt < max_retries:
+        try:
+            response = client.chat.completions.create(
             model=deployment,
             temperature=0.7,
             max_tokens=4096,
@@ -60,8 +62,31 @@ def chat():
                 ]
             }
         )
-        
-        return jsonify({"response": response.choices[0].message.content})
+            return response
+        except openai.RateLimitError as e:
+            attempt += 1
+            if attempt < max_retries:
+                interval = min(max_interval, min_interval * (2**(attempt - 1)))
+                logging.info(f"Rate limit exceeded. Rate attempt {attempt} of {max_retries}. Waiting for {interval} seconds.")
+                time.sleep(interval)
+            else:
+                logging.error(f"Max entries reached. Last error: {e}")
+                raise
+
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_message = request.form["message"]
+    try:
+        response = request_with_retry()
+        print(response)
+        return response
+        #return jsonify({"response": response.choices[0].message.content})
     except Exception as e:
         logging.error(f"An error occurred: {e}")
         return jsonify({"error": str(e)}), 500
