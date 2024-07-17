@@ -6,6 +6,7 @@ from azure.search.documents.indexes import SearchIndexClient
 from azure.search.documents.indexes.models import SearchIndex, SimpleField, SearchableField
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
+import re
 
 # .env dosyasını yükle
 load_dotenv()
@@ -53,7 +54,7 @@ def extract_text_from_pdf(blob_service_client, container_name, blob_name):
     return text
 
 def sanitize_key(key):
-    sanitized_key = key.replace('.', '-').replace(' ', '-')
+    sanitized_key = re.sub(r'[^a-zA-Z0-9_-]', '-', key)
     return sanitized_key
 
 def index_documents(search_client, documents, chunk_size=1024):

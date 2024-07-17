@@ -4,22 +4,22 @@ import logging
 import dotenv
 from flask import Flask, render_template, request, jsonify
 
-# .env dosyasını yükle
+# Load .env file
 dotenv.load_dotenv()
 
-# Ortam değişkenlerini yükle
+# Load environment variables
 endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 api_key = os.getenv("AZURE_OPENAI_KEY")
 deployment = os.getenv("AZURE_OAI_DEPLOYMENT")
 
-# Kimlik bilgilerini kontrol et
+# Check for missing credentials
 if not all([endpoint, api_key, deployment]):
     raise ValueError("Some environment variables are missing. Please check your .env file.")
 
-# Flask uygulaması
+# Flask application
 app = Flask(__name__)
 
-# OpenAI istemcisi oluştur
+# OpenAI client
 client = openai.AzureOpenAI(
     base_url=f"{endpoint}/openai/deployments/{deployment}/extensions",
     api_key=api_key,
@@ -36,9 +36,9 @@ def chat():
     try:
         response = client.chat.completions.create(
             model=deployment,
-            temperature=0.7,
+            temperature=0.3,
             max_tokens=4096,
-            top_p=0.95,
+            top_p=0.90,
             messages=[
                 {
                     "role": "user",
@@ -61,7 +61,13 @@ def chat():
             }
         )
 
-        return jsonify({"response": response.choices[0].message.content})
+        assistant_message = response.choices[0].message.content
+        disclaimer = (
+            "\n\nUyarı:\nLütfen unutmayın ki ben bir AI yatırım asistanıyım ve sağladığım bilgiler yatırım tavsiyesi "
+            "yerine geçmeyebilir. Yatırım kararlarınızı alırken profesyonel bir danışmana başvurmanız önerilir."
+        )
+
+        return jsonify({"response": assistant_message + disclaimer})
     except Exception as e:
         logging.error(f"An error occurred: {e}")
         return jsonify({"error": str(e)}), 500
