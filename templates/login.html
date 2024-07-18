@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intertech I-Bot Yatırım Asistanı - Giriş Yap</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #040047 0%, #201388 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      max-width: 1200px;
+    }
+
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+    }
+
+    .right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .left img {
+      width: 200px;
+      margin-bottom: 20px;
+    }
+
+    .right h2 {
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .tabs a {
+      text-decoration: none;
+      color: #8b8b8b;
+      margin: 0 15px;
+      font-size: 18px;
+    }
+
+    .tabs a.active {
+      color: white;
+      border-bottom: 2px solid white;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #2a2a2a;
+      color: white;
+    }
+
+    .form-group input::placeholder {
+      color: #8b8b8b;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .submit-btn,
+    .social-btn {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+
+    .submit-btn {
+      background: linear-gradient(90deg, #6e39f6, #d96dff);
+      color: white;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.8;
+    }
+
+    .social-btn {
+      background: #333;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .social-btn i {
+      margin-right: 8px;
+    }
+
+    .social-btn:hover {
+      opacity: 0.8;
+    }
+
+    .social-btn-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      gap: 10px;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .forgot-password a {
+      color: #d96dff;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="left">
+      <img src="img/intertech-logo-white-text (1).png" alt="Intertech Logo" />
+      <p>I-Bot Yatırım Asistanı</p>
+    </div>
+    <div class="right">
+      <div class="tabs">
+        <a class="active">GİRİŞ YAP</a>
+        <a href="register.html">KAYIT OL</a>
+      </div>
+      <h2>Giriş Yapın</h2>
+      <form onsubmit="login(event)">
+        <div class="form-group">
+          <input type="email" id="email" placeholder="Mailinizi Giriniz" required />
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" placeholder="Şifrenizi Giriniz" required />
+        </div>
+        <div class="btn-container">
+          <button type="submit" class="submit-btn">Giriş Yap</button>
+          <div class="social-btn-container">
+            <button type="button" class="social-btn" onclick="googleSignIn()">
+              <i class="fab fa-google"></i> Google
+            </button>
+            <button type="button" class="social-btn" onclick="facebookSignIn()">
+              <i class="fab fa-facebook-f"></i> Facebook
+            </button>
+          </div>
+        </div>
+      </form>
+      <div class="forgot-password">
+        <a href="forgot-password.html">Şifrenizi mi unuttunuz?</a>
+      </div>
+    </div>
+  </div>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <!-- Custom JS -->
+  <script src="/static/js/auth.js"></script>
+</body>
+
+</html>
