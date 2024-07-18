@@ -1,0 +1,62 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+table {
+  margin-top: 20px;
+  border-collapse: collapse;
+  width: 80%;
+}
+
+th,
+td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #333;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #222;
+}
+
+tr:nth-child(odd) {
+  background-color: #333;
+}
+
+tr.selected {
+  background-color: #666 !important;
+}
+
+input {
+  margin: 5px;
+  padding: 10px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  color: white;
+  background-color: #333;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
+}
