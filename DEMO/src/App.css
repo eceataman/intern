@@ -1,62 +1,77 @@
-.App {
-  text-align: center;
-}
-
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.top-bar {
+  margin-bottom: 20px;
+}
+
+.main-content {
+  display: flex;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Align items to the start (left) */
+  position: fixed;
+  /* Make the sidebar fixed */
+  top: 0;
+  /* Align to the top */
+  left: 0;
+  /* Align to the left */
+  height: 100%;
+  /* Full height */
+  padding: 20px;
+  background-color: #282c34;
   color: white;
 }
 
-table {
-  margin-top: 20px;
-  border-collapse: collapse;
-  width: 80%;
+.sidebar h2 {
+  margin-bottom: 10px;
 }
 
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #333;
-  color: white;
-}
-
-tr:nth-child(even) {
-  background-color: #222;
-}
-
-tr:nth-child(odd) {
-  background-color: #333;
-}
-
-tr.selected {
-  background-color: #666 !important;
-}
-
-input {
-  margin: 5px;
-  padding: 10px;
-}
-
-button {
-  margin: 5px;
-  padding: 10px;
-  color: white;
-  background-color: #333;
+.sidebar button {
+  margin-bottom: 10px;
+  /* Space between buttons */
+  background-color: #61dafb;
+  color: #282c34;
   border: none;
+  padding: 10px 20px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #555;
+.sidebar button:hover {
+  background-color: #21a1f1;
+}
+
+.content {
+  margin-left: 200px;
+  /* Adjust according to the width of the sidebar */
+  padding: 20px;
+  width: 100%;
+}
+
+.positions,
+.market-data {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table th {
+  background-color: #f2f2f2;
 }
