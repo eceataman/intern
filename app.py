@@ -2,7 +2,7 @@ import os
 import openai
 import logging
 import dotenv
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, redirect, render_template, request, jsonify, session,url_for
 
 # Load .env file
 dotenv.load_dotenv()
@@ -18,7 +18,7 @@ if not all([endpoint, api_key, deployment]):
 
 # Flask application
 app = Flask(__name__)
-
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 # OpenAI client
 client = openai.AzureOpenAI(
     base_url=f"{endpoint}/openai/deployments/{deployment}/extensions",
@@ -28,7 +28,7 @@ client = openai.AzureOpenAI(
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("dashboard.html")
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -36,7 +36,7 @@ def chat():
     try:
         response = client.chat.completions.create(
             model=deployment,
-            temperature=0.7,
+            temperature=0.3,
             max_tokens=4096,
             top_p=0.95,
             messages=[
@@ -81,6 +81,22 @@ def register_page():
 @app.route("/login.html")
 def login_page():
     return render_template("login.html")
+
+@app.route("/chatbot.html")
+def chatbot_page():
+    return render_template("chatbot.html")
+
+
+@app.route("/forgot-password.html")
+def forgotpassword_page():
+    return render_template("forgot-password.html")
+
+
+@app.route('/logout')
+def logout():
+    # Oturumu sonlandırma işlemleri
+    session.pop('user_id', None)  # Örnek olarak, oturumdan user_id'yi kaldır
+    return redirect(url_for('login_page'))  # Login sayfasına yönlendir
 
 
 if __name__ == "__main__":
