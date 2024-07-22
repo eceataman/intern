@@ -7,17 +7,15 @@ from datetime import datetime
 load_dotenv()
 
 # db connection
-connection_string = f"DRIVER={driver};SERVER={server};PORT=1433;DATABASE={database};UID={username};PWD={password}"
-conn = pyodbc.connect(connection_string)
-cursor = conn.cursor()
+connection_string = os.getenv("AZURE_SQL_CONNECTION_STRING")
 
 def insert_user(username, password_hash, email, created_at, last_login=None):
     try:
         conn = pyodbc.connect(connection_string)
         cursor = conn.cursor()
-
+        
         insert_query = """
-        INSERT INTO Users (username, password_hash, email, created_at, last_login)
+        INSERT INTO Users (username, pwd_hash, email, created_at, last_login)
         VALUES (?, ?, ?, ?, ?)
         """
         cursor.execute(insert_query, (username, password_hash, email, created_at, last_login))
@@ -29,7 +27,6 @@ def insert_user(username, password_hash, email, created_at, last_login=None):
         cursor.close()
         conn.close()
 
-# see if user exists in db
 def login_auth(username):
     try:
         conn = pyodbc.connect(connection_string)
@@ -39,13 +36,13 @@ def login_auth(username):
         SELECT * FROM Users
         WHERE username = ?
         """
-        cursor.execute(select_query, (username))
+        cursor.execute(select_query, (username,))
 
         user = cursor.fetchone()
 
         if user:
             print("user var")
-            return True
+            return Truetes
         else:
             print("user yoh")
             return False
@@ -57,5 +54,8 @@ def login_auth(username):
         cursor.close()
         conn.close()
 
-if __name__ == '__main__':
-    # chaos
+# ex
+if __name__ == "__main__":
+    created_at = datetime.now()
+    insert_user('testuser', 'hashed_password', 'test@example.com', created_at)
+    login_auth('testuser')
