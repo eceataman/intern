@@ -3,13 +3,8 @@ import pyodbc
 from dotenv import load_dotenv
 from datetime import datetime
 
-# fetch .env vals
+# environment variables from .env file
 load_dotenv()
-driver = os.getenv('DATABASE_DRIVER')
-server = os.getenv('DATABASE_SERVER')
-database = os.getenv('DATABASE_NAME')
-username = os.getenv('DATABASE_USERNAME')
-password = os.getenv('DATABASE_PASSWORD')
 
 # db connection
 connection_string = f"DRIVER={driver};SERVER={server};PORT=1433;DATABASE={database};UID={username};PWD={password}"
