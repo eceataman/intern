@@ -173,9 +173,9 @@ function App() {
     setLoading(true);
     axios.get('http://127.0.0.1:5000/get-day-watch')
       .then(response => {
-        setTopGainers(response.data.attributes.cap400_gainers);
-        console.log(topGainers);
-        setTopLosers(response.data.attributes.cap400_losers);
+        const data = response.data.data.attributes;
+        setTopGainers(data.top_gainers);
+        setTopLosers(data.top_losers);
         setLoading(false);
       })
       .catch(error => {
@@ -183,7 +183,6 @@ function App() {
         setLoading(false);
       });
   };
-
 
   return (
     <div className="App">
@@ -357,8 +356,8 @@ function App() {
                             </tr>
                           </thead>
                           <tbody>
-                            {topGainers.map((gainer, index) => (
-                              <tr key={index}>
+                            {topGainers.map(gainer => (
+                              <tr key={gainer.id}>
                                 <td>{gainer.slug}</td>
                                 <td>{gainer.name}</td>
                               </tr>
@@ -380,8 +379,8 @@ function App() {
                             </tr>
                           </thead>
                           <tbody>
-                            {topLosers.map((loser, index) => (
-                              <tr key={index}>
+                            {topLosers.map(loser => (
+                              <tr key={loser.id}>
                                 <td>{loser.slug}</td>
                                 <td>{loser.name}</td>
                               </tr>
