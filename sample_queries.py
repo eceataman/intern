@@ -26,7 +26,8 @@ connection_string = (
 )
 
 
-def insert_user(username, password_hash, email, created_at, last_login=None):
+def insert_user(username, password_hash, email):
+    ## user_auth() bir username döndürürse hata vermeli
     conn = None
     cursor = None
 
@@ -35,10 +36,10 @@ def insert_user(username, password_hash, email, created_at, last_login=None):
         cursor = conn.cursor()
 
         insert_query = """
-        INSERT INTO Users (username, pwd_hash, email, created_at, last_login)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Users (username, pwd_hash, email)
+        VALUES (?, ?, ?)
         """
-        cursor.execute(insert_query, (username, password_hash, email, created_at, last_login))
+        cursor.execute(insert_query, (username, password_hash, email))
         conn.commit()
         print(f"User {username} artık var.")
     except pyodbc.Error as e:
@@ -83,5 +84,5 @@ def login_auth(username):
 # ex
 if __name__ == "__main__":
     created_at = datetime.now()
-    insert_user('testuser', 'hashed_password', 'test@example.com', created_at)
+    insert_user('testuser', 'hashed_password', 'test@example.com')
     login_auth('testuser')
