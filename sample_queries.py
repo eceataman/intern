@@ -13,7 +13,7 @@ def insert_user(username, password_hash, email, created_at, last_login=None):
     try:
         conn = pyodbc.connect(connection_string)
         cursor = conn.cursor()
-        
+
         insert_query = """
         INSERT INTO Users (username, pwd_hash, email, created_at, last_login)
         VALUES (?, ?, ?, ?, ?)
@@ -22,7 +22,7 @@ def insert_user(username, password_hash, email, created_at, last_login=None):
         conn.commit()
         print(f"User {username} artık var.")
     except pyodbc.Error as e:
-        print(f"An error occurred: {e}")
+        print(f"Exception: {e}")
     finally:
         cursor.close()
         conn.close()
@@ -42,7 +42,7 @@ def login_auth(username):
 
         if user:
             print("user var")
-            return Truetes
+            return True
         else:
             print("user yoh")
             return False
