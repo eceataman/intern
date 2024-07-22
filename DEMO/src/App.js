@@ -29,15 +29,18 @@ function App() {
   const [epics, setEpics] = useState(['SILVER', 'NATURALGAS']);
   const [marketData, setMarketData] = useState([]);
 
+
   const [activeTab, setActiveTab] = useState('positions');
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [showChart, setShowChart] = useState(false); // State to control chart visibility
+  const [data, setData] = useState({});
 
-  useEffect(() => {
-    if (activeTab === 'positions') {
-      fetchPositions();
-    }
-  }, [CST, X_SECURITY_TOKEN, activeTab]);
+  const [topGainers, setTopGainers] = useState([]);
+  const [topLosers, setTopLosers] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+
 
   const fetchBalance = async () => {
     try {
@@ -126,6 +129,21 @@ function App() {
     }
   };
 
+
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/search?search_term=${searchTerm}`);
+      if (response.status !== 200) {
+        throw new Error('Network response was not ok');
+      }
+      setData(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
   const getPositionChartData = () => {
     const labels = positions.map(pos => pos.market.instrumentName);
     const data = positions.map(pos => pos.position.size * pos.position.level);
@@ -151,6 +169,22 @@ function App() {
     };
   };
 
+  const fetchData = () => {
+    setLoading(true);
+    axios.get('http://127.0.0.1:5000/get-day-watch')
+      .then(response => {
+        setTopGainers(response.data.attributes.cap400_gainers);
+        console.log(topGainers);
+        setTopLosers(response.data.attributes.cap400_losers);
+        setLoading(false);
+      })
+      .catch(error => {
+        setError(error);
+        setLoading(false);
+      });
+  };
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -163,6 +197,7 @@ function App() {
             <h2>uygulama adı</h2>
             <button onClick={() => setActiveTab('positions')}>Positions</button>
             <button onClick={() => setActiveTab('marketData')}>Market Data</button>
+            <button onClick={() => setActiveTab('yahooFinance')}>Yahoo Finance</button>
           </div>
           <div className="content">
             {activeTab === 'positions' && (
@@ -263,6 +298,102 @@ function App() {
                 </table>
                 <p>{createPositionStatus}</p>
                 <p>{closePositionStatus}</p>
+              </div>
+            )}
+            {activeTab === 'yahooFinance' && (
+              <div className="yahoo-finance">
+                <h2>Yahoo Finance</h2>
+                <input
+                  type="text"
+                  placeholder="Enter stock symbol"
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button onClick={handleSearch}>Search</button>
+                <button onClick={fetchData}>Search1</button>
+                <div className="yahoo-finance-content">
+                  <div className="stock-data">
+                    {data.length > 0 ? (
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Company Name</th>
+                            <th>Symbol</th>
+                            <th>Sector</th>
+                            <th>Open</th>
+                            <th>Current Price</th>
+                            <th>Previous Close</th>
+                            <th>Day High</th>
+                            <th>Day Low</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.map((stock, index) => (
+                            <tr key={index}>
+                              <td>{stock.longName}</td>
+                              <td>{stock.symbol}</td>
+                              <td>{stock.sector}</td>
+                              <td>{stock.open}</td>
+                              <td>{stock.currentPrice}</td>
+                              <td>{stock.previousClose}</td>
+                              <td>{stock.dayHigh}</td>
+                              <td>{stock.dayLow}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <p>No data available</p>
+                    )}
+                  </div>
+                  <div className="market-data-tables">
+                    <div className="top-gainers">
+                      <h3>Top Gainers</h3>
+                      {topGainers.length > 0 ? (
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Symbol</th>
+                              <th>Name</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {topGainers.map((gainer, index) => (
+                              <tr key={index}>
+                                <td>{gainer.slug}</td>
+                                <td>{gainer.name}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <p>No data available</p>
+                      )}
+                    </div>
+                    <div className="top-losers">
+                      <h3>Top Losers</h3>
+                      {topLosers.length > 0 ? (
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Symbol</th>
+                              <th>Name</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {topLosers.map((loser, index) => (
+                              <tr key={index}>
+                                <td>{loser.slug}</td>
+                                <td>{loser.name}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <p>No data available</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

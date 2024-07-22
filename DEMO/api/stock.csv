@@ -1,0 +1,326 @@
+symbol,company_name
+AAPL,Apple Inc.
+MSFT,Microsoft Corporation
+GOOGL,Alphabet Inc.
+AMZN,Amazon.com Inc.
+TSLA,Tesla Inc.
+NVDA,NVIDIA Corporation
+IBM,International Business Machines Corporation
+META,Meta Platforms Inc.
+WMT,Walmart Inc.
+NIO,NIO Inc.
+AMD,Advanced Micro Devices Inc.
+NFLX,Netflix Inc.
+DIS,The Walt Disney Company
+BA,The Boeing Company
+JPM,JPMorgan Chase & Co.
+INTC,Intel Corporation
+ORCL,Oracle Corporation
+CSCO,Cisco Systems Inc.
+PFE,Pfizer Inc.
+MRK,Merck & Co. Inc.
+PEP,PepsiCo Inc.
+KO,Coca-Cola Company
+PG,Procter & Gamble Co.
+VISA,Visa Inc.
+MA,Mastercard Inc.
+HD,Home Depot Inc.
+UNH,UnitedHealth Group Incorporated
+VZ,Verizon Communications Inc.
+CMCSA,Comcast Corporation
+ADBE,Adobe Inc.
+CRM,Salesforce.com Inc.
+PYPL,PayPal Holdings Inc.
+ABT,Abbott Laboratories
+TMO,Thermo Fisher Scientific Inc.
+NKE,Nike Inc.
+COST,Costco Wholesale Corporation
+LLY,Eli Lilly and Company
+XOM,Exxon Mobil Corporation
+CVX,Chevron Corporation
+T,AT&T Inc.
+MCD,McDonald's Corporation
+WFC,Wells Fargo & Company
+BMY,Bristol-Myers Squibb Company
+DHR,Danaher Corporation
+MDT,Medtronic plc
+HON,Honeywell International Inc.
+ABBV,AbbVie Inc.
+SBUX,Starbucks Corporation
+UPS,United Parcel Service Inc.
+QCOM,QUALCOMM Incorporated
+TXN,Texas Instruments Incorporated
+NEE,NextEra Energy Inc.
+UNP,Union Pacific Corporation
+LIN,Linde plc
+LMT,Lockheed Martin Corporation
+MMM,3M Company
+GE,General Electric Company
+CHTR,Charter Communications Inc.
+GILD,Gilead Sciences Inc.
+FISV,Fiserv Inc.
+ANTM,Anthem Inc.
+CVS,CVS Health Corporation
+MO,Altria Group Inc.
+CAT,Caterpillar Inc.
+C,Citigroup Inc.
+BKNG,Booking Holdings Inc.
+AXP,American Express Company
+RTX,Raytheon Technologies Corporation
+SPGI,S&P Global Inc.
+BLK,BlackRock Inc.
+PLD,Prologis Inc.
+AMGN,Amgen Inc.
+TGT,Target Corporation
+DE,Deere & Company
+SCHW,Charles Schwab Corporation
+F,Ford Motor Company
+GM,General Motors Company
+USB,U.S. Bancorp
+TJX,The TJX Companies Inc.
+BA,The Boeing Company
+LOW,Lowe's Companies Inc.
+MS,Morgan Stanley
+GS,Goldman Sachs Group Inc.
+ISRG,Intuitive Surgical Inc.
+ADP,Automatic Data Processing Inc.
+NOW,ServiceNow Inc.
+VRTX,Vertex Pharmaceuticals Inc.
+MDLZ,Mondelez International Inc.
+AMT,American Tower Corporation
+ADI,Analog Devices Inc.
+NSC,Norfolk Southern Corporation
+CSX,CSX Corporation
+MPC,Marathon Petroleum Corporation
+AEP,American Electric Power Company Inc.
+DUK,Duke Energy Corporation
+SO,The Southern Company
+SRE,Sempra Energy
+PEG,Public Service Enterprise Group Incorporated
+EIX,Edison International
+PPL,PPL Corporation
+ED,Consolidated Edison Inc.
+EXC,Exelon Corporation
+FE,FirstEnergy Corp.
+ES,Eversource Energy
+XEL,Xcel Energy Inc.
+garan.ıs,Garanti Bankası
+akbnk.ıs,Akbank
+isctr.ıs,İş Bankası
+tuprs.ıs,Tüpraş
+bimas.ıs,BİM Birleşik Mağazalar
+thyao.ıs,Türk Hava Yolları
+asels.ıs,Aselsan Elektronik Sanayi ve Ticaret A.Ş.
+kchol.ıs,Koç Holding
+sise.ıs,Şişecam
+eregl.ıs,Ereğli Demir ve Çelik Fabrikaları T.A.Ş.
+toaso.ıs,Tofaş Türk Otomobil Fabrikası A.Ş.
+vestl.ıs,Vestel Elektronik Sanayi ve Ticaret A.Ş.
+tavhl.ıs,TAV Havalimanları Holding
+ykbnk.ıs,Yapı Kredi Bankası
+halkb.ıs,Halk Bankası
+ttkom.ıs,Türk Telekomünikasyon A.Ş.
+petkm.ıs,Petkim Petrokimya Holding A.Ş.
+sahol.ıs,Sabancı Holding
+aksen.ıs,Aksa Enerji Üretim A.Ş.
+alark.ıs,Alarko Holding
+dohol.ıs,Doğan Holding
+pgsus.ıs,Pegasus Hava Taşımacılığı A.Ş.
+enkai.ıs,Enka İnşaat ve Sanayi A.Ş.
+aygaz.ıs,Aygaz A.Ş.
+otkar.ıs,Otokar Otomotiv ve Savunma Sanayi A.Ş.
+ttrak.ıs,Türk Traktör ve Ziraat Makineleri A.Ş.
+ulker.ıs,Ülker Bisküvi Sanayi A.Ş.
+froto.ıs,Ford Otosan
+arclk.ıs,Arçelik A.Ş.
+tursg.ıs, Türkiye Sigorta A.Ş.
+mgros.ıs,Migros Ticaret A.Ş.
+sise.ıs,Şişecam
+trkcm.ıs,Trakya Cam Sanayi A.Ş.
+soda.ıs,Soda Sanayi A.Ş.
+anacm.ıs,Anadolu Cam Sanayi A.Ş.
+krdmd.ıs,Kardemir Karabük Demir Çelik Sanayi ve Ticaret A.Ş.
+sarky.ıs,Sarkuysan Elektrolitik Bakır Sanayi ve Ticaret A.Ş.
+vakbn.ıs,Vakıfbank
+bjkas.ıs,Beşiktaş Futbol Yatırımları Sanayi ve Ticaret A.Ş.
+gsaray.ıs,Galatasaray Sportif A.Ş.
+fener.ıs,Fenerbahçe Futbol A.Ş.
+tspor.ıs,Trabzonspor Sportif Yatırım ve Futbol İşletmeciliği Ticaret A.Ş.
+ihlas.ıs,İhlas Holding A.Ş.
+hlgyo.ıs,Halk Gayrimenkul Yatırım Ortaklığı A.Ş.
+isgyo.ıs,İş Gayrimenkul Yatırım Ortaklığı A.Ş.
+akgrt.ıs,Aksigorta A.Ş.
+nthol.ıs,Net Holding A.Ş.
+doas.ıs,Doğuş Otomotiv Servis ve Ticaret A.Ş.
+karsn.ıs,Karsan Otomotiv Sanayi ve Ticaret A.Ş.
+egeen.ıs,Ege Endüstri ve Ticaret A.Ş.
+tspor.ıs,Trabzonspor Sportif Yatırım ve Futbol İşletmeciliği Ticaret A.Ş.
+sngyo.ıs,Sinpaş Gayrimenkul Yatırım Ortaklığı A.Ş.
+tkfen.ıs,Tekfen Holding A.Ş.
+cimsa.ıs,Çimsa Çimento Sanayi ve Ticaret A.Ş.
+bossa.ıs,Bossa Ticaret ve Sanayi İşletmeleri T.A.Ş.
+tatgd.ıs,Tat Gıda Sanayi A.Ş.
+pnsut.ıs,Pınar Süt Mamulleri Sanayi A.Ş.
+otkar.ıs,Otokar Otomotiv ve Savunma Sanayi A.Ş.
+mrdin.ıs,Mardin Çimento Sanayii ve Ticaret A.Ş.
+sasa.ıs,Sasa Polyester Sanayi A.Ş.
+BTC-USD,Bitcoin
+ETH-USD,Ethereum
+BNB-USD,Binance Coin
+XRP-USD,Ripple
+ADA-USD,Cardano
+SOL-USD,Solana
+DOT-USD,Polkadot
+DOGE-USD,Dogecoin
+LTC-USD,Litecoin
+LINK-USD,Chainlink
+UNI-USD,Uniswap
+XLM-USD,Stellar
+AAVE-USD,Aave
+TRX-USD,TRON
+AVAX-USD,Avalanche
+MATIC-USD,Polygon
+FTT-USD,FTX Token
+THETA-USD,Theta
+ATOM-USD,Cosmos
+VET-USD,VeChain
+ICP-USD,Internet Computer
+FIL-USD,Filecoin
+ALGO-USD,Algorand
+MKR-USD,Maker
+EOS-USD,EOS
+XMR-USD,Monero
+KSM-USD,Kusama
+ENJ-USD,Enjin Coin
+HBAR-USD,Hedera
+QNT-USD,Quant
+GRT-USD,The Graph
+ZIL-USD,Zilliqa
+COMP-USD,Compound
+SNX-USD,Synthetix
+CRV-USD,Curve DAO Token
+SUSHI-USD,SushiSwap
+YFI-USD,yearn.finance
+ANKR-USD,Ankr
+CRO-USD,Crypto.com Coin
+CEL-USD,Celsius
+RUNE-USD,THORChain
+FTM-USD,Fantom
+1INCH-USD,1inch
+BAT-USD,Basic Attention Token
+STX-USD,Stacks
+RSR-USD,Reserve Rights
+KNC-USD,Kyber Network
+ZRX-USD,0x
+REP-USD,Augur
+OMG-USD,OMG Network
+BTG-USD,Bitcoin Gold
+LSK-USD,Lisk
+DGB-USD,Digibyte
+RVN-USD,Ravencoin
+SXP-USD,Swipe
+PAX-USD,Paxos Standard
+LRC-USD,Loopring
+HNT-USD,Helium
+CHZ-USD,Chiliz
+OXT-USD,Orchid
+NKN-USD,NKN
+OCEAN-USD,Ocean Protocol
+ROSE-USD,Oasis Network
+BHP,BHP Group
+RIO,Rio Tinto Group
+VALE,Vale S.A.
+GLNCY,Glencore plc
+FCX,Freeport-McMoRan Inc.
+NEM,Newmont Corporation
+GOLD,Barrick Gold Corporation
+RDS-A,Royal Dutch Shell plc
+XOM,Exxon Mobil Corporation
+CVX,Chevron Corporation
+BP,BP p.l.c.
+SLB,Schlumberger Limited
+TOT,TotalEnergies SE
+EQNR,Equinor ASA
+PTR,PetroChina Company Limited
+SNP,China Petroleum & Chemical Corporation
+MPC,Marathon Petroleum Corporation
+PSX,Phillips 66
+EOG,EOG Resources Inc.
+PBR,Petróleo Brasileiro S.A.
+ENB,Enbridge Inc.
+KMI,Kinder Morgan Inc.
+COP,ConocoPhillips
+OKE,ONEOK Inc.
+WMB,The Williams Companies Inc.
+ET,Energy Transfer LP
+TRP,TC Energy Corporation
+VLO,Valero Energy Corporation
+DVN,Devon Energy Corporation
+HES,Hess Corporation
+FANG,Diamondback Energy Inc.
+OXY,Occidental Petroleum Corporation
+APA,APA Corporation
+MRO,Marathon Oil Corporation
+PXD,Pioneer Natural Resources Company
+CXO,Concho Resources Inc.
+CLR,Continental Resources Inc.
+PE,Parsley Energy Inc.
+EQT,EQT Corporation
+SWN,Southwestern Energy Company
+RRC,Range Resources Corporation
+NBL,Noble Energy Inc.
+COG,Cabot Oil & Gas Corporation
+CHRD,Chord Energy Corporation
+LPI,Laredo Petroleum Inc.
+QEP,QEP Resources Inc.
+WLL,Whiting Petroleum Corporation
+SM,SM Energy Company
+MUR,Murphy Oil Corporation
+NOG,Northern Oil and Gas Inc.
+XEC,Cimarex Energy Co.
+HP,Helmerich & Payne Inc.
+DO,Diamond Offshore Drilling Inc.
+ESV,Ensco Rowan plc
+NE,Noble Corporation plc
+RIG,Transocean Ltd.
+SDRL,Seadrill Limited
+ATW,Atwood Oceanics Inc.
+WFT,Weatherford International plc
+HAL,Halliburton Company
+BKR,Baker Hughes Company
+FMC,FMC Corporation
+CF,CF Industries Holdings Inc.
+MOS,The Mosaic Company
+NTR,Nutrien Ltd.
+AGU,Agrium Inc.
+SQM,Sociedad Química y Minera de Chile S.A.
+IAA,Iamgold Corporation
+ABX,Agnico Eagle Mines Limited
+AUY,Yamana Gold Inc.
+KGC,Kinross Gold Corporation
+GFI,Gold Fields Limited
+HMY,Harmony Gold Mining Company Limited
+SBGL,Sibanye Stillwater Limited
+AU,AngloGold Ashanti Limited
+BTG,B2Gold Corp.
+NGD,New Gold Inc.
+EGO,Eldorado Gold Corporation
+PAAS,Pan American Silver Corp.
+HL,Hecla Mining Company
+SSRM,SSR Mining Inc.
+WPM,Wheaton Precious Metals Corp.
+CDE,Coeur Mining Inc.
+FSM,Fortuna Silver Mines Inc.
+EXK,Endeavour Silver Corp.
+MAG,MAG Silver Corp.
+AG,First Majestic Silver Corp.
+MUX,McEwen Mining Inc.
+NEM,Newmont Corporation
+GOLD,Barrick Gold Corporation
+KL,Kirkland Lake Gold Ltd.
+SAND,Sandstorm Gold Ltd.
+FNV,Franco-Nevada Corporation
+WPM,Wheaton Precious Metals Corp.
+RGLD,Royal Gold Inc.
+OR,Osisko Gold Royalties Ltd.
+MMX,Maverix Metals Inc.
