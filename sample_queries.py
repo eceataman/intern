@@ -3,13 +3,33 @@ import pyodbc
 from dotenv import load_dotenv
 from datetime import datetime
 
-# environment variables from .env file
 load_dotenv()
 
-# db connection
-connection_string = os.getenv("AZURE_SQL_CONNECTION_STRING")
+driver = os.getenv("AZURE_SQL_DRIVER")
+server = os.getenv("AZURE_SQL_SERVER")
+database = os.getenv("AZURE_SQL_DATABASE")
+username = os.getenv("AZURE_SQL_USER")
+password = os.getenv("AZURE_SQL_PASSWORD")
+encrypt = os.getenv("AZURE_SQL_ENCRYPT")
+trust_certificate = os.getenv("AZURE_SQL_TRUST_CERTIFICATE")
+connection_timeout = os.getenv("AZURE_SQL_CONNECTION_TIMEOUT")
+
+connection_string = (
+    f"Driver={driver};"
+    f"Server={server};"
+    f"Database={database};"
+    f"Uid={username};"
+    f"Pwd={password};"
+    f"Encrypt={encrypt};"
+    f"TrustServerCertificate={trust_certificate};"
+    f"Connection Timeout={connection_timeout};"
+)
+
 
 def insert_user(username, password_hash, email, created_at, last_login=None):
+    conn = None
+    cursor = None
+
     try:
         conn = pyodbc.connect(connection_string)
         cursor = conn.cursor()
@@ -24,10 +44,14 @@ def insert_user(username, password_hash, email, created_at, last_login=None):
     except pyodbc.Error as e:
         print(f"Exception: {e}")
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 def login_auth(username):
+    conn = None
+    cursor = None
     try:
         conn = pyodbc.connect(connection_string)
         cursor = conn.cursor()
@@ -51,8 +75,10 @@ def login_auth(username):
         print(f"Exception: {e}")
         return False
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 # ex
 if __name__ == "__main__":
