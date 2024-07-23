@@ -2,9 +2,29 @@ import os
 import logging
 from flask import Flask, redirect, render_template, request, jsonify, session, url_for
 from azure_openai_client import AzureOpenAIClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+
+
+uri = "mongodb+srv://admin_user:12341234@chathistory.tal73k8.mongodb.net/chat_histories_db?retryWrites=true&w=majority&appName=chatHistory"
+
+
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+chat_history_db = client['chat_histories_db']
+chat_collection = chat_history_db['chat_histories_collection']
+
+
 
 # Flask application
-app = Flask(__name__)
+app = Flask(_name_)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 
 # Azure OpenAI Client
@@ -14,9 +34,14 @@ azure_client = AzureOpenAIClient()
 def index():
     return render_template("dashboard.html")
 
+
+
+
 @app.route("/chat", methods=["POST"])
 def chat():
     user_message = request.form["message"]
+    user_email = session.get('user_email') 
+    #print("chat: "+user_email)
     try:
         assistant_message = azure_client.get_chat_completion(user_message)
         disclaimer = (
@@ -27,6 +52,18 @@ def chat():
     except Exception as e:
         logging.error(f"An error occurred: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/store_email", methods=["GET"])
+def store_email():
+    email = request.args.get('email')  # Get the email from query parameters
+    #print("store_email: "+email)
+    if email:
+        session['user_email'] = email
+        return jsonify({"message": "Email stored in session"}), 200
+    else:
+        return jsonify({"error": "Email parameter missing"}), 400
+
 
 @app.route("/register.html")
 def register_page():
@@ -50,5 +87,5 @@ def logout():
     session.pop('user_id', None)  # Örnek olarak, oturumdan user_id'yi kaldır
     return redirect(url_for('login_page'))  # Login sayfasına yönlendir
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     app.run(debug=True)

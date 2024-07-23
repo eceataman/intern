@@ -51,7 +51,11 @@
     }
 
     .right h2 {
-      margin-bottom: 20px;
+      margin-bottom: 0px;
+    }
+
+    .left h2{
+      margin-bottom: 0px;
     }
 
     .tabs {
@@ -159,8 +163,8 @@
 <body>
   <div class="container">
     <div class="left">
-      <img src="img/intertech-logo-white-text (1).png" alt="Intertech Logo" />
-      <p>I-Bot Yatırım Asistanı</p>
+      <img src="{{ url_for('static', filename='images/robot.png') }}" alt="Intertech Logo" />
+      <h2>I-Bot Yatırım Asistanı</h2>
     </div>
     <div class="right">
       <div class="tabs">
@@ -200,4 +204,4 @@
   <script src="/static/js/auth.js"></script>
 </body>
 
-</html>
+</html

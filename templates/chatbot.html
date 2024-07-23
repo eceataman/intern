@@ -12,7 +12,7 @@
     />
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/styles.css') }}"
+      href="{{ url_for('static', filename='css/styles-chatbot.css') }}"
     />
     <link
       rel="stylesheet"
@@ -20,28 +20,30 @@
     />
   </head>
 
-  <body>
+  <body class="d-flex flex-column">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container-fluid">
-        <!--Chat history btn-->
         <button
           class="btn btn-outline-light me-2"
           type="button"
           aria-label="Chat History"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasChatHistory"
+          aria-controls="offcanvasChatHistory"
         >
           <i class="bi bi-chat-dots"></i>
         </button>
         <div class="d-flex align-items-center">
-          <img
-            class="img-fluid ms-3 me-3"
-            id="navbarlogo"
-            src="{{ url_for('static', filename='images/intertech-logo-white-text (1) copy.png') }}"
-            alt="Intertech Logo"
-            class="img-fluid"
-          />
-          <a href="#" class="navbar-brand">I-Bot Yatırım Asistanı</a>
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <img
+              class="img-fluid ms-3 me-3"
+              id="navbarlogo"
+              src="{{ url_for('static', filename='images/intertech-logo-white-text (1) copy.png') }}"
+              alt="Intertech Logo"
+            />
+            <h5 href="#" class="my-0">I-Bot Yatırım Asistanı</h5>
+          </a>
         </div>
-
         <button
           class="navbar-toggler"
           type="button"
@@ -53,17 +55,15 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!--Navbar content-->
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <a href="#" class="nav-link">Main Page</a>
+              <a href="#" class="nav-link">Hakkımızda</a
+              ><!--goes to dashboard.html-->
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">Demo</a>
+              <a href="#" class="nav-link">Yatırım Takip</a
+              ><!--goes to burak's demo page-->
             </li>
           </ul>
           <ul class="navbar-nav ms-auto mb-2 mb-md-0">
@@ -91,18 +91,22 @@
       </div>
     </nav>
 
-    <div
-      class="content-container container-fluid d-flex flex-column min-vh-100"
-    >
-      <div
-        class="content m-5 bg-dark p-3 rounded flex-grow-1 d-flex flex-column"
-      >
-        <div class="messages" id="messageContainer">
-          <!--Messages shall be inserted here-->
+    <main class="container-fluid d-flex flex-column flex-grow-1">
+      <div class="m-5 bg-dark p-3 rounded d-flex flex-column flex-grow-1">
+        <section
+          class="messages d-flex flex-column justify-content-end"
+          id="messageContainer"
+        >
+          <!--Messages will be inserted here-->
           <div class="message bot">Hi, how can I assist you today?</div>
+        </section>
+        <div id="loadingDots" class="loading-dots d-none">
+          <div></div>
+          <div></div>
+          <div></div>
         </div>
         <form method="POST" id="chatForm" class="mt-2">
-          <div class="input-area input-group">
+          <div class="input-area input-group d-flex align-items-center">
             <input
               type="text"
               class="form-control"
@@ -114,6 +118,32 @@
           </div>
         </form>
       </div>
+    </main>
+
+    <!-- Offcanvas for Chat History -->
+    <div
+      class="offcanvas offcanvas-start"
+      tabindex="-1"
+      id="offcanvasChatHistory"
+      aria-labelledby="offcanvasChatHistoryLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasChatHistoryLabel">
+          Chat History
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <!-- Chat history content -->
+        <ul id="chatHistoryList" class="list-group list-group-flush">
+          <!-- Chat history items will be appended here -->
+        </ul>
+      </div>
     </div>
 
     <script
@@ -121,6 +151,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script src="{{url_for('static', filename='js/script.js')}}"></script>
+    <script src="{{url_for('static', filename='js/chat.js')}}"></script>
   </body>
 </html>
