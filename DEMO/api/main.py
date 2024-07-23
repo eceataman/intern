@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import requests
+from flask import Flask, jsonify, request
 import yfinance as yf
-import csv
-from flask import Flask, request, jsonify
 import pandas as pd
+import requests
+from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
@@ -13,8 +11,7 @@ API_KEY = "fNeecHCvG5OCsj1f"
 IDENTIFIER = "2288777255yuceler@gmail.com"
 PASSWORD = "Asd.1234"
 
-
-@app.route('/session', methods=['POST'])
+@app.route('/session', methods=['POST']) 
 def create_session():
     response = requests.post(f"{BASE_URL}/session", json={
         'identifier': IDENTIFIER,
@@ -32,75 +29,16 @@ def create_session():
         return jsonify({'balance': balance, 'CST': CST, 'X_SECURITY_TOKEN': X_SECURITY_TOKEN})
     else:
         return jsonify({'error': 'Unable to create session'}), response.status_code
-
-
-@app.route('/positions', methods=['GET'])
-def get_positions():
-    CST = request.headers.get('CST')
-    X_SECURITY_TOKEN = request.headers.get('X_SECURITY_TOKEN')
-
-    response = requests.get(f"{BASE_URL}/positions", headers={
-        'CST': CST,
-        'X-SECURITY-TOKEN': X_SECURITY_TOKEN
-    })
-
-    if response.status_code == 200:
-        return jsonify(response.json())
-    else:
-        return jsonify({'error': 'Unable to fetch positions'}), response.status_code
-
-
-@app.route('/positions', methods=['POST'])
-def create_position():
-    data = request.json
-    epic = data.get('epic')
-    size = data.get('size')
-
-    CST = request.headers.get('CST')
-    X_SECURITY_TOKEN = request.headers.get('X_SECURITY_TOKEN')
-
-    response = requests.post(f"{BASE_URL}/positions", json={
-        'epic': epic,
-        'direction': 'BUY',
-        'size': size
-    }, headers={
-        'CST': CST,
-        'X-SECURITY-TOKEN': X_SECURITY_TOKEN
-    })
-
-    if response.status_code == 200:
-        return jsonify({'message': 'Position created'})
-    else:
-        return jsonify({'error': 'Unable to create position'}), response.status_code
-
-
-@app.route('/positions/<dealId>', methods=['DELETE'])
-def close_position(dealId):
-    CST = request.headers.get('CST')
-    X_SECURITY_TOKEN = request.headers.get('X_SECURITY_TOKEN')
-
-    response = requests.delete(f"{BASE_URL}/positions/{dealId}", headers={
-        'CST': CST,
-        'X-SECURITY-TOKEN': X_SECURITY_TOKEN
-    })
-
-    if response.status_code == 200:
-        return jsonify({'message': f'Closed position with dealId: {dealId}'})
-    else:
-        return jsonify({'error': 'Unable to close position'}), response.status_code
-
-
+    
 @app.route('/markets', methods=['GET'])
 def get_markets():
     searchTerm = request.args.get('searchTerm')
-    epics = request.args.get('epics')
 
     CST = request.headers.get('CST')
     X_SECURITY_TOKEN = request.headers.get('X_SECURITY_TOKEN')
 
     params = {
-        'searchTerm': searchTerm,
-        'epics': epics
+        'searchTerm': searchTerm
     }
 
     response = requests.get(f"{BASE_URL}/markets", params=params, headers={
@@ -113,13 +51,6 @@ def get_markets():
     else:
         return jsonify({'error': 'Unable to fetch market data'}), response.status_code
     
-@app.route('/yahoo-finance', methods=['POST'])
-def get_yahoo_finance_data():
-    data = request.json
-    ticker = data.get('ticker')
-    yahoo = yf.Ticker(ticker)
-    return jsonify(yahoo.info)
-
 # CSV dosyasını yükle
 df = pd.read_csv('stock.csv')
 
@@ -130,8 +61,8 @@ def search(search_term):
         axis=1
     )]
 
-    # İlk 5 sonucu seç
-    result = matching_rows.head(5)
+    # İlk 10 sonucu seç
+    result = matching_rows.head(10)
 
     # Sadece 'symbol' sütununu döndür ve listeye dönüştür
     symbols_list = result['symbol'].tolist()
@@ -173,7 +104,6 @@ def get_day_watch():
         return jsonify(response.json())
     else:
         return jsonify({"error": "Failed to fetch data"}), response.status_code
-
-
+    
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,11 @@
+axios==0.4.0
+Flask==3.0.3
+Flask-Cors==4.0.1
+pandas==2.2.2
+requests==2.32.3
+ticker==0.13
+yfinance==0.2.40
+
+npm install axios
+npm install chart.js react-chartjs-2
+

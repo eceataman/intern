@@ -1,403 +1,322 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title
-} from 'chart.js';
-
-// Register necessary components for Chart.js
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
-
-const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
-const UNUSED_COLOR = '#404040'; // Darker gray color for unused funds
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
+import './App.css';
+import TradingViewWidget from './TradingViewWidget';
 
 function App() {
-  const [balance, setBalance] = useState(null);
   const [CST, setCST] = useState(null);
   const [X_SECURITY_TOKEN, setXSecurityToken] = useState(null);
-  const [positions, setPositions] = useState([]);
-  const [createPositionStatus, setCreatePositionStatus] = useState(null);
-  const [closePositionStatus, setClosePositionStatus] = useState(null);
-
-  const [size, setSize] = useState('');
-  const [searchTerm, setSearchTerm] = useState('silver');
-  const [epics, setEpics] = useState(['SILVER', 'NATURALGAS']);
   const [marketData, setMarketData] = useState([]);
-
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [data, setData] = useState([]);
+  const [symbolArray, setSymbolArray] = useState([]);
   const [activeTab, setActiveTab] = useState('positions');
-  const [selectedPosition, setSelectedPosition] = useState(null);
-  const [showChart, setShowChart] = useState(false); // State to control chart visibility
-  const [data, setData] = useState({});
+  const [savedStockData, setSavedStockData] = useState([]);
+  const [selectedStock, setSelectedStock] = useState(null);
 
-  const [topGainers, setTopGainers] = useState([]);
-  const [topLosers, setTopLosers] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    sessionstart();
+    const savedData = JSON.parse(localStorage.getItem('savedStockData')) || [];
+    setSavedStockData(savedData);
+  }, []);
 
+  useEffect(() => {
+    localStorage.setItem('savedStockData', JSON.stringify(savedStockData));
+  }, [savedStockData]);
 
-
-  const fetchBalance = async () => {
+  // Session başlangıç fonksiyonu
+  const sessionstart = async () => {
     try {
       const response = await axios.post('http://localhost:5000/session');
-      const { balance, CST, X_SECURITY_TOKEN } = response.data;
-      setBalance(balance);
+      const { CST, X_SECURITY_TOKEN } = response.data;
       setCST(CST);
       setXSecurityToken(X_SECURITY_TOKEN);
     } catch (error) {
-      console.error('Error fetching balance:', error);
+      console.error('Error fetching session data:', error);
     }
   };
 
-  const fetchPositions = async () => {
-    try {
-      if (CST && X_SECURITY_TOKEN) {
-        const response = await axios.get('http://localhost:5000/positions', {
-          headers: {
-            "CST": CST,
-            "X-SECURITY-TOKEN": X_SECURITY_TOKEN
-          }
-        });
-        const positions = response.data.positions || [];
-        setPositions(positions);
-        setShowChart(true); // Show chart after fetching positions
-      }
-    } catch (error) {
-      console.error('Error fetching positions:', error);
-    }
-  };
-
-  const fetchCreatePosition = async (symbol, size) => {
-    try {
-      if (CST && X_SECURITY_TOKEN) {
-        const response = await axios.post('http://localhost:5000/positions', {
-          epic: symbol,
-          size: size
-        }, {
-          headers: {
-            "CST": CST,
-            "X-SECURITY-TOKEN": X_SECURITY_TOKEN
-          }
-        });
-        setCreatePositionStatus(response.data.message);
-        fetchPositions();
-      }
-    } catch (error) {
-      console.error('Error creating position:', error);
-    }
-  };
-
-  const closePosition = async (dealId) => {
-    try {
-      if (CST && X_SECURITY_TOKEN && dealId) {
-        const response = await axios.delete(`http://localhost:5000/positions/${dealId}`, {
-          headers: {
-            "CST": CST,
-            "X-SECURITY-TOKEN": X_SECURITY_TOKEN
-          }
-        });
-        setClosePositionStatus(response.data.message);
-        fetchPositions();
-      }
-    } catch (error) {
-      console.error('Error closing position:', error);
-    }
-  };
-
-  const fetchMarketData = async (searchTerm, epics) => {
-    const params = new URLSearchParams({
-      searchTerm: searchTerm,
-      epics: epics.join(',')
-    }).toString();
-    try {
-      if (CST && X_SECURITY_TOKEN) {
-        const response = await axios.get(`http://localhost:5000/markets?${params}`, {
-          headers: {
-            "X-SECURITY-TOKEN": X_SECURITY_TOKEN,
-            "CST": CST
-          }
-        });
-        setMarketData(response.data.markets || []);
-      }
-    } catch (error) {
-      console.error('Error fetching market data:', error);
-    }
-  };
-
-
-
+  // Arama işlevi
   const handleSearch = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/search?search_term=${searchTerm}`);
-      if (response.status !== 200) {
-        throw new Error('Network response was not ok');
-      }
+      const marketResponse = await axios.get('http://localhost:5000/markets', {
+        headers: {
+          "X-SECURITY-TOKEN": X_SECURITY_TOKEN,
+          "CST": CST
+        }
+      });
+      setMarketData(marketResponse.data);
       setData(response.data);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching search data:', error);
     }
   };
 
+  // Fiyat almak için yardımcı fonksiyon
+  const getPrice = (symbol, index) => {
+    const currentPrice = data[index]?.currentPrice || 0;
+    const uniquePairs = getUniqueSymbolPairs();
+    let resultPrice = currentPrice;
 
-  const getPositionChartData = () => {
-    const labels = positions.map(pos => pos.market.instrumentName);
-    const data = positions.map(pos => pos.position.size * pos.position.level);
+    symbolArray.push(`${data[index]?.symbol},${currentPrice}`);
 
-    // Use fixed colors based on the position count
-    const colors = labels.map((_, i) => COLORS[i % COLORS.length]);
+    uniquePairs.forEach(({ epic, bid }) => {
+      if (symbol === epic) {
+        resultPrice = bid;
+      }
+    });
 
-    // Calculate the total value of positions
-    const totalPositionValue = data.reduce((sum, value) => sum + value, 0);
+    return resultPrice;
+  };
 
-    // Calculate the unused funds
-    const unusedFunds = balance - totalPositionValue;
+  // Benzersiz sembol çiftlerini almak için fonksiyon
+  const getUniqueSymbolPairs = () => {
+    const uniquePairs = new Set();
+    marketData.markets.forEach(marketItem => {
+      const pair = `${marketItem.epic},${marketItem.bid}`;
+      uniquePairs.add(pair);
+    });
+    return Array.from(uniquePairs).map(pair => {
+      const [epic, bid] = pair.split(',');
+      return { epic, bid };
+    });
+  };
+
+  // Satın alma işlevi
+  const handleBuy = (stock, index) => {
+    const adjustedPrice = getPrice(stock.symbol, index);
+    const stockData = {
+      longName: stock.longName,
+      symbol: stock.symbol,
+      sector: stock.sector,
+      open: stock.open,
+      currentPrice: adjustedPrice,
+      newcurrentPrice: "",
+      previousClose: stock.previousClose,
+      dayHigh: stock.dayHigh,
+      dayLow: stock.dayLow,
+      size: '1',
+      priceChange: "",
+    };
+
+    setSavedStockData(prevData => [...prevData, stockData]);
+  };
+
+  // Güncelleme işlevi
+  const handleUpdate = async () => {
+    try {
+      const updatedData = await Promise.all(savedStockData.map(async (stock) => {
+        const params = new URLSearchParams({ searchTerm: stock.symbol }).toString();
+        const marketResponse = await axios.get(`http://localhost:5000/markets?${params}`, {
+          headers: { "X-SECURITY-TOKEN": X_SECURITY_TOKEN, "CST": CST }
+        });
+
+        const newCurrentPrice = marketResponse.data.markets[0]?.bid || stock.currentPrice;
+        const priceChange = ((newCurrentPrice - stock.currentPrice) / stock.currentPrice) * 100;
+        const formattedPriceChange = `${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%`;
+
+        return {
+          ...stock,
+          newcurrentPrice: newCurrentPrice,
+          priceChange: formattedPriceChange
+        };
+      }));
+
+      setSavedStockData(updatedData);
+    } catch (error) {
+      console.error('Error updating stock data:', error);
+    }
+  };
+
+  // Silme işlevi
+  const handleDelete = (index) => {
+    const updatedStockData = savedStockData.filter((_, i) => i !== index);
+    setSavedStockData(updatedStockData);
+  };
+
+  // Grafik verilerini oluşturma
+  const generateChartData = () => {
+    const labels = savedStockData.map(stock => stock.symbol);
+    const data = savedStockData.map(stock => {
+      const priceChange = ((stock.newcurrentPrice - stock.currentPrice) / stock.currentPrice) * 100;
+      return priceChange;
+    });
+    const backgroundColor = savedStockData.map(stock => {
+      const priceChange = ((stock.newcurrentPrice - stock.currentPrice) / stock.currentPrice) * 100;
+      return priceChange >= 0 ? 'green' : 'red';
+    });
 
     return {
-      labels: [...labels, 'Cash'],
-      datasets: [
-        {
-          label: 'Position Values and Cash',
-          data: [...data, unusedFunds],
-          backgroundColor: [...colors, UNUSED_COLOR]
-        }
-      ]
+      labels,
+      datasets: [{
+        label: 'Fiyat Değişimi (%)',
+        data,
+        backgroundColor,
+        borderColor: '#333',
+        borderWidth: 1
+      }]
     };
   };
 
-  const fetchData = () => {
-    setLoading(true);
-    axios.get('http://127.0.0.1:5000/get-day-watch')
-      .then(response => {
-        const data = response.data.data.attributes;
-        setTopGainers(data.top_gainers);
-        setTopLosers(data.top_losers);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError(error);
-        setLoading(false);
-      });
+  // Stok seçme işlevi
+  const handleSelectStock = (stock) => {
+    setSelectedStock(stock);
   };
+
+  // Görüntüleme butonuna tıklama işlevi
+  const handleViewClick = (stock) => {
+    let modifiedSymbol = stock.symbol;
+    if (modifiedSymbol.includes('.')) {
+      modifiedSymbol = modifiedSymbol.split('.')[0]; // Noktadan önceki kısmı al
+    }
+    setSelectedStock({
+      ...stock,
+      symbol: modifiedSymbol
+    });
+  };
+
+  // Sekme değişikliğinde güncelleme işlevini çağır
+  useEffect(() => {
+    if (activeTab === 'stock') {
+      handleUpdate();
+    }
+  }, [activeTab]);
 
   return (
     <div className="App">
-      <header className="App-header">
-        <div className="top-bar">
-          <button onClick={fetchBalance}>Fetch Balance</button>
-          <h2>Balance: {balance}</h2>
-        </div>
-        <div className="main-content">
-          <div className="sidebar">
-            <h2>uygulama adı</h2>
-            <button onClick={() => setActiveTab('positions')}>Positions</button>
-            <button onClick={() => setActiveTab('marketData')}>Market Data</button>
-            <button onClick={() => setActiveTab('yahooFinance')}>Yahoo Finance</button>
-          </div>
-          <div className="content">
-            {activeTab === 'positions' && (
-              <div className="positions">
-                <h2>Positions</h2>
-                <button onClick={fetchPositions}>Fetch Positions</button>
-                <div>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Instrument Name</th>
-                        <th>Direction</th>
-                        <th>Level</th>
-                        <th>Size</th>
-                        <th>UPL</th>
-                        <th>Deal ID</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {positions.map(position => (
-                        <tr
-                          key={position.position.dealId}
-                          onClick={() => setSelectedPosition(position.position.dealId)}
-                          style={{ backgroundColor: selectedPosition === position.position.dealId ? '#f0f0f0' : 'white' }}
-                        >
-                          <td>{position.market.instrumentName}</td>
-                          <td>{position.position.direction}</td>
-                          <td>{position.position.level}</td>
-                          <td>{position.position.size}</td>
-                          <td>{position.position.upl}</td>
-                          <td>{position.position.dealId}</td>
-                          <td>
-                            {selectedPosition === position.position.dealId && (
-                              <button onClick={() => closePosition(position.position.dealId)}>Close Position</button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <div className="chart-container">
-                    {showChart && <Pie data={getPositionChartData()} />}
-                  </div>
-                </div>
-              </div>
-            )}
-            {activeTab === 'marketData' && (
-              <div className="market-data">
-                <h2>Market Data</h2>
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Enter search term (e.g. silver)"
-                />
-                <input
-                  type="text"
-                  value={epics.join(',')}
-                  onChange={(e) => setEpics(e.target.value.split(','))}
-                  placeholder="Enter EPICs (comma separated, e.g. SILVER,NATURALGAS)"
-                />
-                <button onClick={() => fetchMarketData(searchTerm, epics)}>Fetch Market Data</button>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th>Net Change</th>
-                      <th>High</th>
-                      <th>Low</th>
-                      <th>Percentage Change</th>
-                      <th>Bid</th>
-                      <th>Offer</th>
-                      <th>Action</th>
+      <div className="sidebar">
+        <h2>Yatırım Asistanı</h2>
+        <button onClick={() => setActiveTab('main')}>Ana Sayfa</button>
+        <button onClick={() => setActiveTab('stock')}>Stoklar</button>
+      </div>
+      <div className="main-content">
+        {activeTab === 'main' && (
+          <div className="main">
+            <input
+              className="search-bar"
+              type="text"
+              placeholder="Ara"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="search" onClick={handleSearch}>Ara</button>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Şirket Adı</th>
+                    <th>Sembol</th>
+                    <th>Sektör</th>
+                    <th>Açılış</th>
+                    <th>Şu Anki Fiyat</th>
+                    <th>Önceki Kapanış</th>
+                    <th>Günlük Yüksek</th>
+                    <th>Günlük Düşük</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((stock, index) => (
+                    <tr key={index} onClick={() => handleSelectStock(stock)}>
+                      <td>{stock.longName}</td>
+                      <td>{stock.symbol}</td>
+                      <td>{stock.sector}</td>
+                      <td>{stock.open}</td>
+                      <td>{getPrice(stock.symbol, index)}</td>
+                      <td>{stock.previousClose}</td>
+                      <td>{stock.dayHigh}</td>
+                      <td>{stock.dayLow}</td>
+                      <td>
+                        <button onClick={() => handleBuy(stock, index)}>Satın Al</button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {marketData.map(market => (
-                      <tr key={market.symbol}>
-                        <td>{market.symbol}</td>
-                        <td>{market.netChange}</td>
-                        <td>{market.high}</td>
-                        <td>{market.low}</td>
-                        <td>{market.percentageChange}</td>
-                        <td>{market.bid}</td>
-                        <td>{market.offer}</td>
-                        <td>
-                          <input
-                            type="number"
-                            placeholder="Size"
-                            onChange={(e) => setSize(e.target.value)}
-                          />
-                          <button onClick={() => fetchCreatePosition(market.epic, size)}>Buy</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <p>{createPositionStatus}</p>
-                <p>{closePositionStatus}</p>
-              </div>
-            )}
-            {activeTab === 'yahooFinance' && (
-              <div className="yahoo-finance">
-                <h2>Yahoo Finance</h2>
-                <input
-                  type="text"
-                  placeholder="Enter stock symbol"
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button onClick={handleSearch}>Search</button>
-                <button onClick={fetchData}>Search1</button>
-                <div className="yahoo-finance-content">
-                  <div className="stock-data">
-                    {data.length > 0 ? (
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Company Name</th>
-                            <th>Symbol</th>
-                            <th>Sector</th>
-                            <th>Open</th>
-                            <th>Current Price</th>
-                            <th>Previous Close</th>
-                            <th>Day High</th>
-                            <th>Day Low</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.map((stock, index) => (
-                            <tr key={index}>
-                              <td>{stock.longName}</td>
-                              <td>{stock.symbol}</td>
-                              <td>{stock.sector}</td>
-                              <td>{stock.open}</td>
-                              <td>{stock.currentPrice}</td>
-                              <td>{stock.previousClose}</td>
-                              <td>{stock.dayHigh}</td>
-                              <td>{stock.dayLow}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    ) : (
-                      <p>No data available</p>
-                    )}
-                  </div>
-                  <div className="market-data-tables">
-                    <div className="top-gainers">
-                      <h3>Top Gainers</h3>
-                      {topGainers.length > 0 ? (
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Symbol</th>
-                              <th>Name</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {topGainers.map(gainer => (
-                              <tr key={gainer.id}>
-                                <td>{gainer.slug}</td>
-                                <td>{gainer.name}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <p>No data available</p>
-                      )}
-                    </div>
-                    <div className="top-losers">
-                      <h3>Top Losers</h3>
-                      {topLosers.length > 0 ? (
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Symbol</th>
-                              <th>Name</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {topLosers.map(loser => (
-                              <tr key={loser.id}>
-                                <td>{loser.slug}</td>
-                                <td>{loser.name}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <p>No data available</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </header>
+        )}
+        {activeTab === 'stock' && (
+          <div className="stock">
+            <button onClick={handleUpdate}>Güncelle</button>
+            <div className="chart-container">
+              <div className="chart">
+                <Bar data={generateChartData()} options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (tooltipItem) {
+                          return `${tooltipItem.label}: ${tooltipItem.raw.toFixed(2)}%`;
+                        }
+                      }
+                    }
+                  },
+                  scales: {
+                    x: {
+                      beginAtZero: true
+                    },
+                    y: {
+                      beginAtZero: true,
+                      ticks: {
+                        stepSize: 0.05,
+                        callback: function (value) {
+                          return value.toFixed(2) + '%'; // İki basamağa yuvarla ve yüzde ekle
+                        }
+                      }
+                    }
+                  }
+                }} />
+              </div>
+              <div className="tradingview-widget">
+                {selectedStock ? (
+                  <TradingViewWidget symbol={selectedStock.symbol} />
+                ) : (
+                  <p>Bir hisse seçin</p>
+                )}
+              </div>
+            </div>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Şirket Adı</th>
+                    <th>Simge</th>
+                    <th>Mevcut Fiyat</th>
+                    <th>Yeni Fiyat</th>
+                    <th>Fiyat Değişimi</th>
+                    <th>Sil</th>
+                    <th>Görüntüle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {savedStockData.map((stock, index) => (
+                    <tr key={index}>
+                      <td>{stock.longName}</td>
+                      <td>{stock.symbol}</td>
+                      <td>{stock.currentPrice}</td>
+                      <td>{stock.newcurrentPrice}</td>
+                      <td>{stock.priceChange}</td>
+                      <td>
+                        <button onClick={() => handleDelete(index)}>Sil</button>
+                      </td>
+                      <td>
+                        <button onClick={() => handleViewClick(stock)}>Görüntüle</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

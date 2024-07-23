@@ -1,103 +1,116 @@
-.App-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+/* App.css */
 
-.top-bar {
-  margin-bottom: 20px;
-}
-
-.main-content {
+/* App.css */
+.App {
   display: flex;
+  height: 100vh;
 }
 
 .sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 15px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.main,
+.stock {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  /* Align items to the start (left) */
-  position: fixed;
-  /* Make the sidebar fixed */
-  top: 0;
-  /* Align to the top */
-  left: 0;
-  /* Align to the left */
   height: 100%;
-  /* Full height */
-  padding: 20px;
-  background-color: #282c34;
-  color: white;
 }
 
-.sidebar h2 {
-  margin-bottom: 10px;
-}
-
-.sidebar button {
-  margin-bottom: 10px;
-  /* Space between buttons */
-  background-color: #61dafb;
-  color: #282c34;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.sidebar button:hover {
-  background-color: #21a1f1;
-}
-
-.content {
-  margin-left: 200px;
-  /* Adjust according to the width of the sidebar */
-  padding: 20px;
-  width: 100%;
-}
-
-.positions,
-.market-data {
+.table-container {
   margin-top: 20px;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.chart,
+.tradingview-widget {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.chart {
+  min-width: 300px;
+}
+
+.tradingview-widget {
+  min-width: 300px;
+  height: 500px;
+}
+
+
+.sidebar {
+  width: 200px;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-right: 1px solid #ddd;
+  height: 100%;
+  /* Tam yüksekliğe çekildi */
+  box-sizing: border-box;
+}
+
+
+
+
+.search-bar {
+  margin-bottom: 20px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
-table th,
-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-table th {
-  background-color: #f2f2f2;
-}
-
-.yahoo-data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.yahoo-data-table th,
-.yahoo-data-table td {
+th,
+td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
 
-.yahoo-data-table th {
-  background-color: #f4f4f4;
+th {
+  background-color: #f2f2f2;
   font-weight: bold;
 }
 
-.yahoo-data-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+input[type="text"] {
+  padding: 5px;
+  margin-right: 5px;
 }
 
-.yahoo-data-table tr:hover {
-  background-color: #f1f1f1;
+button {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.search {
+  padding: 5px 10px;
+  background-color: #5680d3;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
