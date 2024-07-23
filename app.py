@@ -3,7 +3,7 @@ import logging
 from flask import Flask, redirect, render_template, request, jsonify, session, url_for
 from azure_openai_client import AzureOpenAIClient
 
-# Flask application
+# Flask application test
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 
