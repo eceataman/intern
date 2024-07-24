@@ -2,8 +2,24 @@ import os
 import logging
 from flask import Flask, redirect, render_template, request, jsonify, session, url_for
 from azure_openai_client import AzureOpenAIClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
-# Flask application test
+# MongoDB connection URI
+uri = "mongodb+srv://databaseAdmin:admin@intertech.sre8bae.mongodb.net/?retryWrites=true&w=majority&appName=Intertech"
+
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+chat_history_db = client['Intertech']
+chat_collection = chat_history_db['ChatHistory']
+
+# Flask application
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
 
@@ -17,6 +33,8 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     user_message = request.form["message"]
+    user_email = session.get('user_email')
+    # print("chat: "+user_email)
     try:
         assistant_message = azure_client.get_chat_completion(user_message)
         disclaimer = (
@@ -27,6 +45,16 @@ def chat():
     except Exception as e:
         logging.error(f"An error occurred: {e}")
         return jsonify({"error": str(e)}), 500
+
+@app.route("/store_email", methods=["GET"])
+def store_email():
+    email = request.args.get('email')  # Get the email from query parameters
+    # print("store_email: "+email)
+    if email:
+        session['user_email'] = email
+        return jsonify({"message": "Email stored in session"}), 200
+    else:
+        return jsonify({"error": "Email parameter missing"}), 400
 
 @app.route("/register.html")
 def register_page():
@@ -49,6 +77,17 @@ def logout():
     # Oturumu sonlandırma işlemleri
     session.pop('user_id', None)  # Örnek olarak, oturumdan user_id'yi kaldır
     return redirect(url_for('login_page'))  # Login sayfasına yönlendir
+
+@app.route("/api/chatHistory", methods=["GET"])
+def get_chat_history():
+    try:
+        chat_history = list(chat_collection.find({}))
+        for chat in chat_history:
+            chat['_id'] = str(chat['_id'])  # Convert ObjectId to string
+        return jsonify(chat_history)
+    except Exception as e:
+        logging.error(f"An error occurred while fetching chat history: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
